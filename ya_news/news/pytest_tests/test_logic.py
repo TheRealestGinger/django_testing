@@ -79,8 +79,8 @@ def test_user_cant_edit_comment_of_another_user(
 ):
     comment_text = comment.text
     assert not_author_client.post(
-            reverse('news:edit', args=(comment.id,)),
-            data=form_data
+        reverse('news:edit', args=(comment.id,)),
+        data=form_data
     ).status_code == HTTPStatus.NOT_FOUND
     comment.refresh_from_db()
     assert comment.text == comment_text
