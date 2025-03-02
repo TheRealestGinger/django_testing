@@ -7,6 +7,7 @@ from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
 
 FORM_DATA = {'text': 'Коммент'}
+BAD_WORD_COMMENT = {'text': f'Какой-то текст, {BAD_WORDS}, еще текст'}
 
 
 def test_anonymous_user_cant_create_comment(client, news_detail_url):
@@ -30,16 +31,11 @@ def test_user_can_create_comment(
     assert comment.author == author
 
 
-@pytest.mark.parametrize(
-    'bad_words',
-    BAD_WORDS
-)
-def test_user_cant_use_bad_words(author_client, news_detail_url, bad_words):
-    comment = {'text': f'Какой-то текст, {bad_words}, еще текст'}
+def test_user_cant_use_bad_words(author_client, news_detail_url):
     assertFormError(
         author_client.post(
             news_detail_url,
-            data=comment
+            data=BAD_WORD_COMMENT
         ),
         form='form',
         field='text',

@@ -40,6 +40,12 @@ class TestRoutes(Base):
             (NOTES_DETAIL_REDIRECT_URL, self.client, HTTPStatus.OK),
             (NOTES_EDIT_REDIRECT_URL, self.client, HTTPStatus.OK),
             (NOTES_DELETE_REDIRECT_URL, self.client, HTTPStatus.OK),
+            (NOTES_LIST_URL, self.client, HTTPStatus.FOUND),
+            (NOTES_ADD_URL, self.client, HTTPStatus.FOUND),
+            (NOTES_SUCCESS_URL, self.client, HTTPStatus.FOUND),
+            (NOTES_DETAIL_URL, self.client, HTTPStatus.FOUND),
+            (NOTES_EDIT_URL, self.client, HTTPStatus.FOUND),
+            (NOTES_DELETE_URL, self.client, HTTPStatus.FOUND),
             (
                 NOTES_DETAIL_URL,
                 self.other_author_client,

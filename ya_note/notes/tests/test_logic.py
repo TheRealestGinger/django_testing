@@ -21,8 +21,8 @@ class TestLogic(Base):
             self.author_client.post(NOTES_ADD_URL, data=self.form_data),
             NOTES_SUCCESS_URL
         )
-        new_note = Note.objects.get()
         self.assertEqual(Note.objects.count(), 1)
+        new_note = Note.objects.get()
         self.assertEqual(new_note.title, self.form_data['title'])
         self.assertEqual(new_note.text, self.form_data['text'])
         self.assertEqual(new_note.slug, self.form_data['slug'])
@@ -72,6 +72,7 @@ class TestLogic(Base):
         self.assertEqual(note.title, self.form_data['title'])
         self.assertEqual(note.text, self.form_data['text'])
         self.assertEqual(note.slug, self.form_data['slug'])
+        self.assertEqual(note.author, self.author)
 
     def test_user_cant_edit_note_of_another_user(self):
         self.assertEqual(self.other_author_client.post(
@@ -89,13 +90,14 @@ class TestLogic(Base):
             self.author_client.post(NOTES_DELETE_URL),
             NOTES_SUCCESS_URL
         )
-        self.assertNotIn(self.note, Note.objects.all())
+        self.assertEqual(Note.objects.count(), 0)
 
     def test_user_cant_delete_note_of_another_user(self):
         self.assertEqual(
             self.other_author_client.post(NOTES_DELETE_URL).status_code,
             HTTPStatus.NOT_FOUND
         )
+        self.assertTrue(Note.objects.filter(pk=self.note.id))
         note_from_db = Note.objects.get(pk=self.note.id)
         self.assertEqual(self.note.title, note_from_db.title)
         self.assertEqual(self.note.text, note_from_db.text)

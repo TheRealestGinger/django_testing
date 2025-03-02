@@ -7,13 +7,14 @@ from notes.models import Note
 
 User = get_user_model()
 
+SLUG = 'slug'
 NOTES_HOME = reverse('notes:home')
 NOTES_SUCCESS_URL = reverse('notes:success')
 NOTES_LIST_URL = reverse('notes:list')
 NOTES_ADD_URL = reverse('notes:add')
-NOTES_DETAIL_URL = reverse('notes:detail', args=('slug',))
-NOTES_EDIT_URL = reverse('notes:edit', args=('slug',))
-NOTES_DELETE_URL = reverse('notes:delete', args=('slug',))
+NOTES_DETAIL_URL = reverse('notes:detail', args=(SLUG,))
+NOTES_EDIT_URL = reverse('notes:edit', args=(SLUG,))
+NOTES_DELETE_URL = reverse('notes:delete', args=(SLUG,))
 LOGIN_URL = reverse('users:login')
 LOGOUT_URL = reverse('users:logout')
 SIGNUP_URL = reverse('users:signup')
@@ -37,7 +38,7 @@ class Base(TestCase):
         cls.note = Note.objects.create(
             title='Заголовок автора',
             text='Текст',
-            slug='slug',
+            slug=SLUG,
             author=cls.author
         )
         cls.form_data = {
@@ -45,14 +46,3 @@ class Base(TestCase):
             'text': 'Новый текст',
             'slug': 'new-slug',
         }
-        # cls.NOTES_HOME = reverse('notes:home')
-        # cls.NOTES_SUCCESS_URL = reverse('notes:success')
-        # cls.NOTES_LIST_URL = reverse('notes:list')
-        # cls.NOTES_ADD_URL = reverse('notes:add')
-        # cls.NOTES_DETAIL_URL = reverse('notes:detail', args=(cls.note.slug,))
-        # cls.NOTES_EDIT_URL = reverse('notes:edit', args=(cls.note.slug,))
-        # cls.NOTES_DELETE_URL = reverse('notes:delete', args=(cls.note.slug,))
-        # cls.LOGIN_URL = reverse('users:login')
-        # cls.LOGOUT_URL = reverse('users:logout')
-        # cls.SIGNUP_URL = reverse('users:signup')
-        # cls.REDIRECT_URL = f'{cls.LOGIN_URL}?next='
