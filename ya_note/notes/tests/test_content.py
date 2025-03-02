@@ -1,43 +1,37 @@
-from django.contrib.auth import get_user_model
-from django.test import TestCase
-from django.urls import reverse
-
+from .conftest import Base
 from notes.forms import NoteForm
-from notes.models import Note
-
-User = get_user_model()
 
 
-class TestContent(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.author = User.objects.create(username='Автор')
-        cls.other_author = User.objects.create(username='Другой автор')
-        cls.note = Note.objects.create(
-            title='Заголовок автора',
-            text='Текст',
-            author=cls.author
+class TestContent(Base):
+    def test_notes_list_for_author(self):
+        object_list = self.author_client.get(
+            self.NOTES_LIST_URL
+        ).context['object_list']
+        self.assertIn(
+            self.note,
+            object_list
         )
+        for note in object_list:
+            self.assertEqual(self.note.title, note.title)
+            self.assertEqual(self.note.text, note.text)
+            self.assertEqual(self.note.slug, note.slug)
+            self.assertEqual(self.note.author, note.author)
 
-    def test_notes_list_for_different_users(self):
-        users_statuses = (
-            (self.author, self.assertIn),
-            (self.other_author, self.assertNotIn),
+    def test_notes_list_for_not_author(self):
+        self.assertNotIn(
+            self.note,
+            self.other_author_client.get(
+                self.NOTES_LIST_URL
+            ).context['object_list']
         )
-        for user, status in users_statuses:
-            self.client.force_login(user)
-            status(
-                self.note,
-                self.client.get(reverse('notes:list')).context['object_list']
-            )
 
     def test_authorized_client_has_form(self):
-        self.client.force_login(self.author)
-        for name, args in (
-            ('notes:add', None),
-            ('notes:edit', (self.note.slug,))
+        for name in (
+            self.NOTES_ADD_URL,
+            self.NOTES_EDIT_URL
         ):
             with self.subTest(name=name):
-                response = self.client.get(reverse(name, args=args))
-                self.assertIn('form', response.context)
-                self.assertIsInstance(response.context['form'], NoteForm)
+                self.assertIsInstance(
+                    self.author_client.get(name).context.get('form'),
+                    NoteForm
+                )
