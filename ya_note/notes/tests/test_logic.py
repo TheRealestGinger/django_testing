@@ -4,16 +4,10 @@ from pytils.translit import slugify
 
 from .conftest import (
     Base,
-    NOTES_HOME,
     NOTES_SUCCESS_URL,
-    NOTES_LIST_URL,
     NOTES_ADD_URL,
-    NOTES_DETAIL_URL,
     NOTES_EDIT_URL,
     NOTES_DELETE_URL,
-    LOGIN_URL,
-    LOGOUT_URL,
-    SIGNUP_URL,
     NOTES_ADD_REDIRECT_URL
 )
 from notes.forms import WARNING

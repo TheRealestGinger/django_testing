@@ -15,7 +15,9 @@ CLIENT = pytest.lazy_fixture('client')
 AUTHOR_CLIENT = pytest.lazy_fixture('author_client')
 NOT_AUTHOR_CLIENT = pytest.lazy_fixture('not_author_client')
 COMMENT_EDIT_REDIRECT_URL = pytest.lazy_fixture('comment_edit_redirect_url')
-COMMENT_DELETE_REDIRECT_URL = pytest.lazy_fixture('comment_delete_redirect_url')
+COMMENT_DELETE_REDIRECT_URL = pytest.lazy_fixture(
+    'comment_delete_redirect_url'
+)
 
 
 @pytest.mark.parametrize(
