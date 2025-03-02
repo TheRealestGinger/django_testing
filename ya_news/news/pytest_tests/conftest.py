@@ -126,7 +126,7 @@ def comment(news, author):
 def comments(news, author):
     today = datetime.today()
     for index in range(11):
-        Comment(
+        Comment.objects.create(
             text=f'Просто текст.{index}',
             news=news,
             author=author,
