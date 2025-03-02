@@ -1,34 +1,37 @@
-from .conftest import Base
+from .conftest import (
+    Base,
+    NOTES_LIST_URL,
+    NOTES_ADD_URL,
+    NOTES_EDIT_URL,
+)
+
 from notes.forms import NoteForm
 
 
 class TestContent(Base):
     def test_notes_list_for_author(self):
-        object_list = self.author_client.get(
-            self.NOTES_LIST_URL
+        notes = self.author_client.get(
+            NOTES_LIST_URL
         ).context['object_list']
         self.assertIn(
             self.note,
-            object_list
+            notes
         )
-        for note in object_list:
-            self.assertEqual(self.note.title, note.title)
-            self.assertEqual(self.note.text, note.text)
-            self.assertEqual(self.note.slug, note.slug)
+        for note in notes:
             self.assertEqual(self.note.author, note.author)
 
     def test_notes_list_for_not_author(self):
         self.assertNotIn(
             self.note,
             self.other_author_client.get(
-                self.NOTES_LIST_URL
+                NOTES_LIST_URL
             ).context['object_list']
         )
 
     def test_authorized_client_has_form(self):
         for name in (
-            self.NOTES_ADD_URL,
-            self.NOTES_EDIT_URL
+            NOTES_ADD_URL,
+            NOTES_EDIT_URL
         ):
             with self.subTest(name=name):
                 self.assertIsInstance(

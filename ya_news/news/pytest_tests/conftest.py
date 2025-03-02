@@ -25,7 +25,7 @@ def comment_detail_url(comment):
 
 @pytest.fixture
 def comment_url(news_detail_url):
-    return news_detail_url + '#comments'
+    return f'{news_detail_url}#comments'
 
 
 @pytest.fixture
@@ -54,8 +54,13 @@ def users_signup_url():
 
 
 @pytest.fixture
-def redirect_url(users_login_url):
-    return f'{users_login_url}?next='
+def comment_edit_redirect_url(users_login_url, comment_edit_url):
+    return f'{users_login_url}?next={comment_edit_url}'
+
+
+@pytest.fixture
+def comment_delete_redirect_url(users_login_url, comment_delete_url):
+    return f'{users_login_url}?next={comment_delete_url}'
 
 
 @pytest.fixture(autouse=True)
@@ -118,14 +123,12 @@ def comment(news, author):
 
 
 @pytest.fixture
-def comment11(news, author):
+def comments(news, author):
     today = datetime.today()
-    Comment.objects.bulk_create(
+    for index in range(11):
         Comment(
-            text='Просто текст.',
+            text=f'Просто текст.{index}',
             news=news,
             author=author,
             created=today - timedelta(days=index)
         )
-        for index in range(11)
-    )

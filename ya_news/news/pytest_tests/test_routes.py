@@ -14,6 +14,8 @@ COMMENT_DELETE_URL = pytest.lazy_fixture('comment_delete_url')
 CLIENT = pytest.lazy_fixture('client')
 AUTHOR_CLIENT = pytest.lazy_fixture('author_client')
 NOT_AUTHOR_CLIENT = pytest.lazy_fixture('not_author_client')
+COMMENT_EDIT_REDIRECT_URL = pytest.lazy_fixture('comment_edit_redirect_url')
+COMMENT_DELETE_REDIRECT_URL = pytest.lazy_fixture('comment_delete_redirect_url')
 
 
 @pytest.mark.parametrize(
@@ -27,7 +29,9 @@ NOT_AUTHOR_CLIENT = pytest.lazy_fixture('not_author_client')
         (COMMENT_EDIT_URL, AUTHOR_CLIENT, HTTPStatus.OK),
         (COMMENT_DELETE_URL, AUTHOR_CLIENT, HTTPStatus.OK),
         (COMMENT_EDIT_URL, NOT_AUTHOR_CLIENT, HTTPStatus.NOT_FOUND),
-        (COMMENT_DELETE_URL, NOT_AUTHOR_CLIENT, HTTPStatus.NOT_FOUND)
+        (COMMENT_DELETE_URL, NOT_AUTHOR_CLIENT, HTTPStatus.NOT_FOUND),
+        (COMMENT_EDIT_REDIRECT_URL, CLIENT, HTTPStatus.OK),
+        (COMMENT_DELETE_REDIRECT_URL, CLIENT, HTTPStatus.OK)
     )
 )
 def test_pages_availability(url, user, status):
@@ -35,11 +39,11 @@ def test_pages_availability(url, user, status):
 
 
 @pytest.mark.parametrize(
-    'url',
+    'url, redirect_url',
     (
-        COMMENT_EDIT_URL,
-        COMMENT_DELETE_URL
+        (COMMENT_EDIT_URL, COMMENT_EDIT_REDIRECT_URL),
+        (COMMENT_DELETE_URL, COMMENT_DELETE_REDIRECT_URL)
     )
 )
 def test_redirect_for_anonymous_client(client, url, redirect_url):
-    assertRedirects(client.get(url), redirect_url + url)
+    assertRedirects(client.get(url), redirect_url)

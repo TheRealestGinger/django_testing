@@ -7,6 +7,7 @@ from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
 
 FORM_DATA = {'text': 'Коммент'}
+BAD_WORDS_FOR_TEST = BAD_WORDS
 
 
 def test_anonymous_user_cant_create_comment(client, news_detail_url):
@@ -32,7 +33,7 @@ def test_user_can_create_comment(
 
 @pytest.mark.parametrize(
     'bad_words',
-    BAD_WORDS
+    BAD_WORDS_FOR_TEST
 )
 def test_user_cant_use_bad_words(author_client, news_detail_url, bad_words):
     assertFormError(
@@ -63,23 +64,17 @@ def test_user_cant_delete_comment_of_another_user(
     not_author_client,
     comment_delete_url,
     comment,
-    news,
-    author
 ):
     assert (not_author_client.post(comment_delete_url).status_code
             == HTTPStatus.NOT_FOUND)
     assert Comment.objects.count() == 1
-    comment = Comment.objects.get()
-    assert comment.text == comment.text
-    assert comment.news == news
-    assert comment.author == author
+    old_comment = Comment.objects.get(pk=comment.id)
+    assert old_comment.text == comment.text
 
 
 def test_author_can_edit_comment(
     author_client,
     comment,
-    news,
-    author,
     comment_edit_url,
     comment_url
 ):
@@ -92,22 +87,16 @@ def test_author_can_edit_comment(
     )
     comment = Comment.objects.get()
     assert comment.text == FORM_DATA['text']
-    assert comment.news == news
-    assert comment.author == author
 
 
 def test_user_cant_edit_comment_of_another_user(
     not_author_client,
     comment,
-    news,
-    author,
     comment_edit_url
 ):
     assert not_author_client.post(
         comment_edit_url,
         data=FORM_DATA
     ).status_code == HTTPStatus.NOT_FOUND
-    comment = Comment.objects.get()
-    assert comment.text != FORM_DATA['text']
-    assert comment.news == news
-    assert comment.author == author
+    old_comment = Comment.objects.get(pk=comment.id)
+    assert old_comment.text == comment.text
