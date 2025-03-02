@@ -42,4 +42,4 @@ def test_pages_availability(url, user, status):
     )
 )
 def test_redirect_for_anonymous_client(client, url, redirect_url):
-    assertRedirects(client.get(url), redirect_url+url)
+    assertRedirects(client.get(url), redirect_url + url)

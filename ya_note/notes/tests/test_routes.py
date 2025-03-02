@@ -51,5 +51,5 @@ class TestRoutes(Base):
             with self.subTest(url=url):
                 self.assertRedirects(
                     self.client.get(url),
-                    self.REDIRECT_URL+url
+                    self.REDIRECT_URL + url
                 )

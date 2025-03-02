@@ -25,7 +25,7 @@ class TestLogic(Base):
         Note.objects.all().delete()
         self.assertRedirects(
             self.client.post(self.NOTES_ADD_URL, data=self.form_data),
-            self.REDIRECT_URL+self.NOTES_ADD_URL
+            self.REDIRECT_URL + self.NOTES_ADD_URL
         )
         self.assertEqual(Note.objects.count(), 0)
 

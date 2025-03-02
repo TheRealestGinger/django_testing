@@ -31,8 +31,8 @@ def test_user_can_create_comment(
 
 
 @pytest.mark.parametrize(
-        'bad_words',
-        BAD_WORDS
+    'bad_words',
+    BAD_WORDS
 )
 def test_user_cant_use_bad_words(author_client, news_detail_url, bad_words):
     assertFormError(
