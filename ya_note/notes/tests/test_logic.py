@@ -72,7 +72,7 @@ class TestLogic(Base):
         self.assertEqual(note.title, self.form_data['title'])
         self.assertEqual(note.text, self.form_data['text'])
         self.assertEqual(note.slug, self.form_data['slug'])
-        self.assertEqual(note.author, self.author)
+        self.assertEqual(self.note.author, self.author)
 
     def test_user_cant_edit_note_of_another_user(self):
         self.assertEqual(self.other_author_client.post(
@@ -90,7 +90,7 @@ class TestLogic(Base):
             self.author_client.post(NOTES_DELETE_URL),
             NOTES_SUCCESS_URL
         )
-        self.assertEqual(Note.objects.count(), 0)
+        self.assertFalse(Note.objects.filter(pk=self.note.id))
 
     def test_user_cant_delete_note_of_another_user(self):
         self.assertEqual(

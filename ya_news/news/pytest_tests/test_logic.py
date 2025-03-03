@@ -1,12 +1,13 @@
 from http import HTTPStatus
 
+import pytest
 from pytest_django.asserts import assertRedirects, assertFormError
 
 from news.forms import BAD_WORDS, WARNING
 from news.models import Comment
 
 FORM_DATA = {'text': 'Коммент'}
-BAD_WORD_COMMENT = {'text': f'Какой-то текст, {BAD_WORDS}, еще текст'}
+BAD_WORD_COMMENT = {'text': 'Какой-то текст, {0}, еще текст'}
 
 
 def test_anonymous_user_cant_create_comment(client, news_detail_url):
@@ -30,11 +31,15 @@ def test_user_can_create_comment(
     assert comment.author == author
 
 
-def test_user_cant_use_bad_words(author_client, news_detail_url):
+@pytest.mark.parametrize(
+    'bad_word',
+    BAD_WORDS
+)
+def test_user_cant_use_bad_words(author_client, news_detail_url, bad_word):
     assertFormError(
         author_client.post(
             news_detail_url,
-            data=BAD_WORD_COMMENT
+            data={'text': BAD_WORD_COMMENT['text'].format(bad_word)}
         ),
         form='form',
         field='text',

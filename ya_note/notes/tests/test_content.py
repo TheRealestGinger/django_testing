@@ -5,22 +5,24 @@ from .conftest import (
     NOTES_EDIT_URL,
 )
 
+from notes.models import Note
 from notes.forms import NoteForm
 
 
 class TestContent(Base):
     def test_notes_list_for_author(self):
-        note = self.author_client.get(
+        notes = self.author_client.get(
             NOTES_LIST_URL
         ).context['object_list']
         self.assertIn(
             self.note,
-            note
+            notes
         )
-        self.assertEqual(self.note.author, note[0].author)
-        self.assertEqual(self.note.title, note[0].title)
-        self.assertEqual(self.note.text, note[0].text)
-        self.assertEqual(self.note.slug, note[0].slug)
+        note = Note.objects.get(pk=self.note.id)
+        self.assertEqual(self.note.author, note.author)
+        self.assertEqual(self.note.title, note.title)
+        self.assertEqual(self.note.text, note.text)
+        self.assertEqual(self.note.slug, note.slug)
 
     def test_notes_list_for_not_author(self):
         self.assertNotIn(
